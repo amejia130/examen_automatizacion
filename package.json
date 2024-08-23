@@ -1,0 +1,16 @@
+{
+  "name": "google-drive-backup",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node backup.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "puppeteer": "^23.1.1"
+  }
+}
