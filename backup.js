@@ -7,7 +7,7 @@ const puppeteer = require('puppeteer');
 
   try {
     // Navegar a Google Drive
-    await page.goto('https://drive.google.com');
+    await page.goto('https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fdrive.google.com%2Fdrive%2F&emr=1&followup=https%3A%2F%2Fdrive.google.com%2Fdrive%2F&osid=1&passive=1209600&service=wise&ifkv=Ab5oB3oxfwww2-oC9bD_9bY5Zw6LYti2mkQA8WhZgXkkVEXsOd1SeQA3FFp50Ig6TaJ_TVKWy1Or&ddm=0&flowName=GlifWebSignIn&flowEntry=ServiceLogin');
 
     // Ingresar el correo electrónico
     await page.type('#identifierId', process.env.GOOGLE_EMAIL);
@@ -23,7 +23,24 @@ const puppeteer = require('puppeteer');
     // Esperar a que la página de Google Drive se cargue
     await page.waitForNavigation();
 
-    // Aquí podrías agregar la lógica para subir un archivo o realizar otras acciones en Google Drive
+    // Subir un archivo
+    const filePath = '/ruta/al/archivoa.txt'; 
+    await page.waitForSelector('div[aria-label="Nuevo"]');
+    await page.click('div[aria-label="Nuevo"]');
+    await page.waitForSelector('div[aria-label="Subir archivos"]');
+    await page.click('div[aria-label="Subir archivos"]');
+
+    
+    const [fileChooser] = await Promise.all([
+      page.waitForFileChooser(),
+      page.click('div[aria-label="Subir archivos"]'),
+    ]);
+    await fileChooser.accept([filePath]);
+
+    
+    await page.waitForSelector('div[aria-label="Archivo subido"]');
+    const successMessage = await page.$eval('div[aria-label="Archivo subido"]', el => el.textContent);
+    expect(successMessage).toContain('subido'); // Validar que el mensaje de éxito sea visible
 
   } catch (error) {
     console.error("Error durante la automatización:", error);
